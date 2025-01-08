@@ -37,10 +37,10 @@ export default function RootLayout({
         <div className="mt-[-7rem]">
           <Provider>{children}</Provider>
         </div>
+        <footer className="flex items-center justify-center p-4 text-black">
+          <p className="text-sm">Made with ❤️ by <a href="https://github.com/AnnemeHolzh" className="hover:underline">Anneme Holzhausen</a></p>
+        </footer>
       </body>
-      <footer className="flex items-center justify-center p-4 text-black">
-        <p className="text-sm">Made with ❤️ by <a href="https://github.com/AnnemeHolzh" className="hover:underline">Anneme Holzhausen</a></p>
-      </footer>
     </html>
   );
 }

@@ -4,10 +4,25 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "../_trpc/client";
 
-export default function TodoList() {
+interface Todo {
+  id: number;
+  content: string;
+  done: number;
+}
+
+interface TodoListProps {
+  initialTodos?: Todo[];
+}
+
+export default function TodoList({ initialTodos }: TodoListProps) {
   const [content, setContent] = useState("");
   const utils = trpc.useContext();
-  const todos = trpc.getTodos.useQuery();
+  
+  const { data: todos } = trpc.getTodos.useQuery(undefined, {
+    initialData: initialTodos || [],
+    queryKey: ['getTodos', undefined],
+  });
+
   const addTodo = trpc.addTodo.useMutation({
     onSuccess: () => {
       utils.getTodos.invalidate();
@@ -69,6 +84,13 @@ export default function TodoList() {
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && content.length) {
+                e.preventDefault();
+                addTodo.mutate(content);
+                setContent("");
+              }
+            }}
             className="flex-grow px-6 py-4 text-lg bg-gray-50 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-all duration-300"
             placeholder="Add a new task..."
           />
@@ -95,7 +117,7 @@ export default function TodoList() {
         className="space-y-4"
       >
         <AnimatePresence>
-          {todos.data?.map((todo) => (
+          {todos?.map((todo) => (
             <motion.div
               key={todo.id}
               variants={itemVariants}
