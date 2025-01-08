@@ -11,8 +11,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Todo List App",
   description: "A modern todo list application built with Next.js, tRPC, and Drizzle",
-  title: "Todo List App",
-  description: "A modern todo list application built with Next.js, tRPC, and Drizzle",
 };
 
 export default function RootLayout({
