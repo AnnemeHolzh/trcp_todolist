@@ -7,15 +7,51 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ------------------------------ Hero Idle Animation ------------------------------ */
+@keyframes idle {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-idle {
+  animation: idle 5s infinite; /* Adjust duration as needed */
+}
+
+/* ------------------------------ Hero Cursor Animation ------------------------------ */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-blink {
+  animation: blink 0.7s infinite; /* Adjust the speed of the blink */
+}
+
+.cursor {
+  height: 1.5em; /* Adjust to match the text height */
+  width: 2px; /* Thinner cursor */
+  background-color: black; /* Cursor color */
+  display: inline-block;
+  animation: blink 0.7s infinite; /* Blinking effect */
 }
