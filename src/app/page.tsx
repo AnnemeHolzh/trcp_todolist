@@ -9,6 +9,9 @@ export default async function Home() {
     <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-8">
       <Hero />
       <TodoListWrapper />
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-8">
+      <Hero />
+      <TodoListWrapper />
     </main>
   );
 }
