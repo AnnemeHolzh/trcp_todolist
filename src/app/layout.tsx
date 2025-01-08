@@ -22,8 +22,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <nav className="flex items-center justify-between p-4 text-white">
           <div className="flex items-center">
-            <img src={logo.src} alt="Logo" className="h-12 w-12 mr-2" />
-            <span className="text-xl font-bold text-black">Ticked Off</span>
+            <img src={logo.src} alt="Logo" className="h-10 w-10 mr-1" />
+            <span className="text-xl font-bold text-black pt-1 pl-1">Ticked-Off</span>
           </div>
           <div className="flex space-x-4 text-black font-medium">
             <Link href="/" className="hover:underline">
@@ -38,6 +38,9 @@ export default function RootLayout({
           <Provider>{children}</Provider>
         </div>
       </body>
+      <footer className="flex items-center justify-center p-4 text-black">
+        <p className="text-sm">Made with ❤️ by <a href="https://github.com/AnnemeHolzh" className="hover:underline">Anneme Holzhausen</a></p>
+      </footer>
     </html>
   );
 }

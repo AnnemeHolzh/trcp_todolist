@@ -3,13 +3,13 @@ import Hero from "./_components/Hero";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-start justify-center p-24">
-      <div className="w-full ">
+    <main className="flex flex-col items-center justify-start">
+      <section className="hero-section w-full h-screen flex items-center justify-center">
         <Hero />
-      </div>
-      <div className="flex justify-center w-full">
+      </section>
+      <section className="w-full h-screen flex items-center justify-center">
         <TodoList />
-      </div>
+      </section>
     </main>
   );
 }

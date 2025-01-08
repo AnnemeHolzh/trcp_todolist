@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
   const currentLineIndex = lines.length - 1;
 
   return (
-    <h1 className="font-bold text-left transition-opacity duration-700 text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-relaxed">
+    <h1 className="font-bold text-left transition-opacity duration-700 text-2xl sm:text-3xl md:text-4xl lg:text-6xl leading-relaxed">
       {lines.map((line, index) => (
         <div key={index} className="flex items-center">
           {line}
