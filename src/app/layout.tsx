@@ -5,6 +5,7 @@ import Provider from "./_trpc/Provider";
 import Link from "next/link";
 import logo from "@/_assets/images/logo.png";
 import React from "react";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
       <nav className="flex items-center justify-between p-4 text-white">
   <div className="flex items-center">
-    <img src={logo.src} alt="Logo" className="h-10 w-10 mr-1" />
+    <Image src={logo.src} alt="Logo" className="h-10 w-10 mr-1" width={40} height={40} />
     <span className="text-xl font-bold text-black pt-1 pl-1">Ticked-Off</span>
   </div>
   <div className="flex space-x-4 text-black font-medium">
