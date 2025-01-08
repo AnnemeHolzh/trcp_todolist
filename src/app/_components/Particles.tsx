@@ -2,10 +2,12 @@
 
 import { useCallback } from "react";
 import Particles from "react-tsparticles";
+import type { ISourceOptions, Engine } from "tsparticles-engine";
 import { loadFull } from "tsparticles";
 
 export default function ParticlesComponent() {
-  const particlesInit = useCallback(async (engine: any) => {
+  // @ts-ignore - Known type mismatch between tsparticles versions
+  const particlesInit = useCallback(async (engine: Engine) => {
     await loadFull(engine);
   }, []);
 
