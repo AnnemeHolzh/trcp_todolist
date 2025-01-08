@@ -18,8 +18,8 @@ export const appRouter = router({
         return await db.select().from(todos).all();
     }),
     addTodo: publicProcedure.input(z.string()).mutation(async (opts) => {
-        await db.insert(todos).values({ content: opts.input, done: 0 }).run();
-        return true; 
+        const result = await db.insert(todos).values({ content: opts.input, done: 0 }).run();
+        return { id: result.lastInsertRowid, content: opts.input, done: 0 };
     }),
     setDone: publicProcedure
     .input(
@@ -38,7 +38,7 @@ export const appRouter = router({
     }),
     deleteTodo: publicProcedure.input(z.number()).mutation(async (opts) => {
         await db.delete(todos).where(eq(todos.id, opts.input)).run();
-        return true;
+        return opts.input;
     }),
 });
 
