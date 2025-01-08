@@ -77,7 +77,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h2 className="text-3xl font-bold mb-6 text-gray-800">What's on your mind?</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">What&apos;s on your mind?</h2>
         <div className="flex flex-col sm:flex-row gap-4 items-center">
           <motion.input
             whileFocus={{ scale: 1.02 }}
