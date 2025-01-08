@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "../_trpc/client";
+import FloatingTodos from "./FloatingTodos";
 
 interface Todo {
   id: number;
@@ -16,15 +17,23 @@ interface TodoListProps {
 
 export default function TodoList({ initialTodos }: TodoListProps) {
   const [content, setContent] = useState("");
+  const [todos, setTodos] = useState<Todo[]>(initialTodos || []);
   const utils = trpc.useContext();
   
-  const { data: todos } = trpc.getTodos.useQuery(undefined, {
+  const { data: fetchedTodos } = trpc.getTodos.useQuery(undefined, {
     initialData: initialTodos || [],
     queryKey: ['getTodos', undefined],
   });
 
+  useEffect(() => {
+    if (fetchedTodos) {
+      setTodos(fetchedTodos);
+    }
+  }, [fetchedTodos]);
+
   const addTodo = trpc.addTodo.useMutation({
-    onSuccess: () => {
+    onSuccess: (newTodo: Todo) => {
+      setTodos((prev) => [...prev, newTodo]);
       utils.getTodos.invalidate();
     },
   });
@@ -34,7 +43,8 @@ export default function TodoList({ initialTodos }: TodoListProps) {
     },
   });
   const deleteTodo = trpc.deleteTodo.useMutation({
-    onSuccess: () => {
+    onSuccess: (id: number) => {
+      setTodos((prev) => prev.filter(todo => todo.id !== id));
       utils.getTodos.invalidate();
     },
   });
@@ -72,6 +82,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-white rounded-2xl shadow-2xl">
+      <FloatingTodos todos={todos} />
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -117,7 +128,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
         className="space-y-4"
       >
         <AnimatePresence>
-          {todos?.map((todo) => (
+          {todos.map((todo) => (
             <motion.div
               key={todo.id}
               variants={itemVariants}

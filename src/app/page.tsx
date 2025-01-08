@@ -1,7 +1,10 @@
 import Hero from "./_components/Hero";
-import TodoListWrapper from "./_components/TodoListWrapper";
+import { Suspense } from "react";
+import { serverClient } from "./_trpc/serverClient";
 
-export default function Home() {
+export default async function Home() {
+  const todos = await serverClient.getTodos.query();
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-8">
       <Hero />
