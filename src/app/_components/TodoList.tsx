@@ -20,16 +20,13 @@ export default function TodoList({ initialTodos }: TodoListProps) {
   const [todos, setTodos] = useState<Todo[]>(initialTodos || []);
   const utils = trpc.useContext();
   
-  const { data: fetchedTodos } = trpc.getTodos.useQuery(undefined, {
-    initialData: initialTodos || [],
-    queryKey: ['getTodos', undefined],
-  });
+  const { data, error, isLoading } = trpc.getTodos.useQuery();
 
-  useEffect(() => {
-    if (fetchedTodos) {
-      setTodos(fetchedTodos);
-    }
-  }, [fetchedTodos]);
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    console.error("Error fetching todos:", error);
+    return <div>Error fetching todos</div>;
+  }
 
   const addTodo = trpc.addTodo.useMutation({
     onSuccess: (newTodo: Todo) => {
@@ -128,7 +125,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
         className="space-y-4"
       >
         <AnimatePresence>
-          {todos.map((todo) => (
+          {data.map((todo) => (
             <motion.div
               key={todo.id}
               variants={itemVariants}
