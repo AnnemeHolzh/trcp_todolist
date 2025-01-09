@@ -4,7 +4,13 @@ import { serverClient } from "./_trpc/serverClient";
 import TodoList from "./_components/TodoList";
 
 export default async function Home() {
-  const todos = await serverClient.getTodos.query();
+  let todos: { id: number; done: number; content: string; }[] | undefined;
+  try {
+    todos = await serverClient.getTodos.query();
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    todos = []; // Fallback to an empty array or handle the error as needed
+  }
 
   return (
     <main className="flex flex-col items-center justify-start">
