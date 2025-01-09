@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "../_trpc/client";
 import FloatingTodos from "./FloatingTodos";
@@ -22,23 +22,19 @@ export default function TodoList({ initialTodos }: TodoListProps) {
   
   const { data, error, isLoading } = trpc.getTodos.useQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    console.error("Error fetching todos:", error);
-    return <div>Error fetching todos</div>;
-  }
-
   const addTodo = trpc.addTodo.useMutation({
     onSuccess: (newTodo: Todo) => {
       setTodos((prev) => [...prev, newTodo]);
       utils.getTodos.invalidate();
     },
   });
+
   const setDone = trpc.setDone.useMutation({
     onSuccess: () => {
       utils.getTodos.invalidate();
     },
   });
+
   const deleteTodo = trpc.deleteTodo.useMutation({
     onSuccess: (id: number) => {
       setTodos((prev) => prev.filter(todo => todo.id !== id));
@@ -46,36 +42,19 @@ export default function TodoList({ initialTodos }: TodoListProps) {
     },
   });
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && content.length) {
+      e.preventDefault();
+      addTodo.mutate(content);
+      setContent("");
+    }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 24,
-      },
-    },
-    exit: {
-      opacity: 0,
-      x: -100,
-      transition: {
-        duration: 0.3,
-      },
-    },
-  };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    console.error("Error fetching todos:", error);
+    return <div>Error fetching todos</div>;
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-8 bg-white rounded-2xl shadow-2xl">
@@ -92,13 +71,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && content.length) {
-                e.preventDefault();
-                addTodo.mutate(content);
-                setContent("");
-              }
-            }}
+            onKeyDown={handleKeyDown}
             className="flex-grow px-6 py-4 text-lg bg-gray-50 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-all duration-300"
             placeholder="Add a new task..."
           />
@@ -119,23 +92,13 @@ export default function TodoList({ initialTodos }: TodoListProps) {
       </motion.div>
 
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
         className="space-y-4"
       >
         <AnimatePresence>
           {data.map((todo) => (
             <motion.div
               key={todo.id}
-              variants={itemVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              layout
-              className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 ${
-                todo.done ? 'bg-green-50 border-2 border-green-200' : 'bg-gray-50 border-2 border-gray-200'
-              }`}
+              className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 ${todo.done ? 'bg-green-50 border-2 border-green-200' : 'bg-gray-50 border-2 border-gray-200'}`}
             >
               <div className="flex items-center gap-4">
                 <motion.button
@@ -147,11 +110,7 @@ export default function TodoList({ initialTodos }: TodoListProps) {
                       done: todo.done ? 0 : 1,
                     });
                   }}
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors duration-300 ${
-                    todo.done
-                      ? 'border-green-500 bg-green-500'
-                      : 'border-gray-300 hover:border-blue-400'
-                  }`}
+                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors duration-300 ${todo.done ? 'border-green-500 bg-green-500' : 'border-gray-300 hover:border-blue-400'}`}
                 >
                   {todo.done && (
                     <motion.svg

@@ -1,43 +1,35 @@
 //index.ts
-import { drizzle } from "drizzle-orm/better-sqlite3"; //Bringing in drizzle ORM
-import { migrate } from "drizzle-orm/better-sqlite3/migrator"; //Will run every time the server starts and migrates the database when the schema changes
-import Database from "better-sqlite3"; //Bringing in database driver 
 import { publicProcedure, router } from "./trpc";
-import { todos } from "../db/schema";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
-const sqlite = new Database("./database/testDB.db");
-const db = drizzle(sqlite);
 
-migrate(db, {
-    migrationsFolder: "./drizzle/migrations",
-});
+let todos: { id: number; content: string; done: number }[] = [];
+let nextId = 1;
 
 export const appRouter = router({
-    getTodos: publicProcedure.query(async () => {
-        return await db.select().from(todos).all();
+    getTodos: publicProcedure.query(() => {
+        return todos;
     }),
-    addTodo: publicProcedure.input(z.string()).mutation(async (opts) => {
-        const result = await db.insert(todos).values({ content: opts.input, done: 0 }).run();
-        return { id: result.lastInsertRowid, content: opts.input, done: 0 };
+    addTodo: publicProcedure.input(z.string()).mutation((opts) => {
+        const newTodo = { id: nextId++, content: opts.input, done: 0 };
+        todos.push(newTodo);
+        return newTodo;
     }),
     setDone: publicProcedure
-    .input(
-        z.object({
-            id: z.number(),
-            done: z.number(),
-        })
-    )
-    .mutation(async (opts) => {
-        await db
-        .update(todos)
-        .set({ done: opts.input.done })
-        .where(eq(todos.id, opts.input.id))
-        .run();
-        return true;
-    }),
-    deleteTodo: publicProcedure.input(z.number()).mutation(async (opts) => {
-        await db.delete(todos).where(eq(todos.id, opts.input)).run();
+        .input(
+            z.object({
+                id: z.number(),
+                done: z.number(),
+            })
+        )
+        .mutation((opts) => {
+            const todo = todos.find(todo => todo.id === opts.input.id);
+            if (todo) {
+                todo.done = opts.input.done;
+            }
+            return true;
+        }),
+    deleteTodo: publicProcedure.input(z.number()).mutation((opts) => {
+        todos = todos.filter(todo => todo.id !== opts.input);
         return opts.input;
     }),
 });
