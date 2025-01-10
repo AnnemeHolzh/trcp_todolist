@@ -5,6 +5,8 @@ import Provider from "./_trpc/Provider";
 import Link from "next/link";
 import logo from "@/_assets/images/logo.png";
 import React from "react";
+import blackEyes from "@/_assets/images/eyes_black.ico";
+import whiteEyes from "@/_assets/images/eyes_white.ico";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href={blackEyes.src} />
+      </head>
       <body className={inter.className}>
       <nav className="flex items-center justify-between p-4 text-white">
   <div className="flex items-center">
