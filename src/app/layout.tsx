@@ -28,7 +28,7 @@ export default function RootLayout({
   </div>
   <div className="flex space-x-4 text-black font-medium">
     <Link href="/" className="nav-link">
-      {Array.from("Landing Page").map((letter, index) => (
+      {Array.from("Todo List").map((letter, index) => (
         <span
           key={index}
           className="letter"
