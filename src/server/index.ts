@@ -2,33 +2,16 @@
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 
-interface Todo {
-  id: number;
-  content: string;
-  done: number;
-  children?: Todo[]; // Optional property for nesting
-}
-
-let todos: Todo[] = [];
+let todos: { id: number; content: string; done: number }[] = [];
 let nextId = 1;
 
 export const appRouter = router({
     getTodos: publicProcedure.query(() => {
         return todos;
     }),
-    addTodo: publicProcedure.input(z.object({
-        content: z.string(),
-        parentId: z.number().optional(),
-    })).mutation((opts) => {
-        const newTodo = { id: nextId++, content: opts.input.content, done: 0, children: [] };
-        if (opts.input.parentId) {
-            const parentTodo = todos.find(todo => todo.id === opts.input.parentId);
-            if (parentTodo && parentTodo.children) {
-                parentTodo.children.push(newTodo);
-            }
-        } else {
-            todos.push(newTodo);
-        }
+    addTodo: publicProcedure.input(z.string()).mutation((opts) => {
+        const newTodo = { id: nextId++, content: opts.input, done: 0 };
+        todos.push(newTodo);
         return newTodo;
     }),
     setDone: publicProcedure
