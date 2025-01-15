@@ -11,7 +11,7 @@ import whiteEyes from "@/_assets/images/eyes_white.ico";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Todo List App",
+  title: "Ticked-Off",
   description: "A modern todo list application built with Next.js, tRPC, and Drizzle",
 };
 
